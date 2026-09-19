@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReRoute 1.0.0</title>
+    <base href="assets/" />
+    <style>
+        html,
+        body {
+            margin: 0;
+            width: 100%;
+            min-height: 100%;
+            font-family: Arial, sans-serif;
+            color: #1f2937;
+        }
+
+        body {
+            height: 100vh;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        #drop-zone {
+            width: 100vw;
+            min-height: 100vh;
+            box-sizing: border-box;
+            background: lightblue;
+            transition: all 0.2s ease;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #drop-zone.has-file {
+            width: 100%;
+            min-height: auto;
+            display: block;
+            align-items: unset;
+            justify-content: unset;
+        }
+
+        #drop-zone.dragging {
+            background: #dbeafe;
+            border-color: #2563eb;
+            transform: scale(1.01);
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .app-shell {
+            display: block;
+        }
+
+        .app-view {
+            display: none;
+        }
+
+        .app-shell.has-file .app-view {
+            display: block;
+        }
+
+        .label-button {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 10px 18px;
+            background: #2563eb;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: top;
+            gap: 10px;
+            margin: 0 0 16px;
+        }
+
+        #status-logo {
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+            object-fit: contain;
+            display: block;
+        }
+
+        #status {
+            margin: 6px 0;
+            font-size: 18px;
+            line-height: 1.2;
+            font-weight: bold;
+            color: #374151;
+        }
+
+        .canvas-wrap {
+            position: relative;
+            width: 100%;
+        }
+
+        .canvas-toolbar {
+            position: absolute;
+            top: -46px;
+            right: -2px;
+            display: flex;
+            gap: 8px;
+            z-index: 2;
+        }
+
+        .save-button {
+            background: #2563eb;
+            color: white;
+        }
+
+        .toolbar-button {
+            border: 1px solid rgba(15, 23, 42, 0.12);
+            background: darkslategrey;
+            color: lightgrey;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+            height: 38px;
+            min-width: 38px;
+        }
+
+        img.zoom {
+            filter: invert(100%);
+            width: 18px;
+            height: 18px;
+        }
+
+        .toolbar-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            text-align: center;
+        }
+
+        #drop-zone:not(.has-file) .empty-state {
+            display: flex;
+        }
+
+        #app-logo {
+            display: block;
+            width: min(55vw, 220px);
+            max-width: 220px;
+            height: auto;
+            filter: drop-shadow(0 8px 18px rgba(37, 99, 235, 0.12));
+            margin-bottom: 32px;
+        }
+
+        #open-gpx-button {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            background: #2563eb;
+            color: white;
+            padding: 12px 18px;
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
+        }
+
+        #empty-state-label {
+            display: none;
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        #drop-zone:not(.has-file) #open-gpx-button,
+        #drop-zone:not(.has-file) #empty-state-label {
+            display: inline-flex;
+        }
+
+        .app-shell.has-file #open-gpx-button,
+        .app-shell.has-file #empty-state-label,
+        .app-shell.has-file .empty-state {
+            display: none;
+        }
+
+        #status-logo {
+            width: 64px;
+            height: 64px;
+        }
+
+        canvas {
+            width: calc(100vw - 40px);
+            height: calc(100vh - 120px);
+            border: 2px solid darkslategrey;
+            border-radius: 10px;
+            background: #f8fafc;
+            display: block;
+            touch-action: none;
+            cursor: default;
+        }
+
+        .version {
+            position: absolute;
+            display: inline-block;
+            top: 8px;
+            right: 12px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <span class="version">v1.0.0</span>
+    <div id="drop-zone" class="container app-shell">
+        <input id="file-input" type="file" accept=".gpx,application/gpx+xml,text/xml" />
+        <div class="empty-state">
+            <img id="app-logo" src="reroute.png" alt="ReRoute logo" />
+            <button id="open-gpx-button" class="toolbar-button" type="button">Open .gpx</button>
+            <p id="empty-state-label">or Drag &amp; Drop .gpx file here!</p>
+        </div>
+        <div class="app-view">
+            <div class="status-bar">
+                <img id="status-logo" src="reroute.png" alt="ReRoute logo" />
+                <p id="status">Waiting for a file...</p>
+            </div>
+            <div class="canvas-wrap">
+                <div class="canvas-toolbar">
+                    <input tabindex="0" id="progress-slider" type="range" min="0" max="0" value="0"
+                        style="width:50vw;margin-left:6px;" />
+                    <button id="undo-button" class="toolbar-button" type="button" title="Undo last action"
+                        disabled>&#x21BA;</button>
+                    <button id="redo-button" class="toolbar-button" type="button" title="Redo last action"
+                        disabled>&#x21BB;</button>
+                    <button id="zoom-origin-button" class="toolbar-button" type="button"
+                        title="Zoom out to original view"><img class="zoom" src="zoom.svg"></button>
+                    <button id="save-download-button" class="toolbar-button save-button" type="button"
+                        title="Save the current route as a GPX file">Save &amp; Download</button>
+                    <button id="discard-close-button" class="toolbar-button" type="button"
+                        title="Discard all changes and close the current route">Discard &amp; Close</button>
+                </div>
+                <canvas id="mapCanvas" width="1000" height="500"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

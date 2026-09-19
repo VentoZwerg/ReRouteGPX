@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="White Risk"
+    xmlns="http://www.topografix.com/GPX/1/1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+    <metadata>
+        <name>Wellhorn Reiss .gpx - MAIN Route 22848680</name>
+    </metadata>
+    <trk>
+        <name>Wellhorn Reiss .gpx - MAIN Route 22848680</name>
+        <trkseg>
+            <trkpt lat="46.665886" lon="8.154219">
+                <ele>2063</ele>
+            </trkpt>
+            <trkpt lat="46.665893" lon="8.154240">
+                <ele>2063</ele>
+            </trkpt>
+            <trkpt lat="46.665890" lon="8.154275">
+                <ele>2063</ele>
+            </trkpt>
+            <trkpt lat="46.665887" lon="8.154273">
+                <ele>2063</ele>
+            </trkpt>
+            <trkpt lat="46.665893" lon="8.154277">
+                <ele>2063</ele>
+            </trkpt>
+        </trkseg>
+    </trk>
+</gpx>
